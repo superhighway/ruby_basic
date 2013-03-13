@@ -1,0 +1,141 @@
+<!doctype html> <html> <head> <meta charset=utf-8> <meta content="IE=edge,chrome=1" http-equiv=X-UA-Compatible> <title>&lt; Pemrograman Ruby &gt; | Sesi 3: Advanced Topic</title> <link href="/css/all.css?1363169393" media=screen rel=stylesheet /> <script src="/js/all.js?1363169392"></script> </head> <body class=sesi-3-advanced> <div id=fixed-menu> <div class=content> <h1><a href=".">&lt; Pemrograman Ruby &gt;</a></h1> </div> </div> <h1>Sesi 3: Advanced Topic</h1> <h2>Exceptions</h2> <p>Exception terjadi ketika aliran program terinterupsi karena error. Penanganan exception pada Ruby mirip dengan C++ dan Java.</p> <table><thead> <tr> <th align=center>C++</th> <th align=center>Java</th> <th align=center>Ruby</th> </tr> </thead><tbody> <tr> <td align=center>try {}</td> <td align=center>try{}</td> <td align=center>begin/end</td> </tr> <tr> <td align=center>catch {}</td> <td align=center>catch {}</td> <td align=center>rescue</td> </tr> <tr> <td align=center></td> <td align=center>finally</td> <td align=center>ensure</td> </tr> <tr> <td align=center>throw</td> <td align=center>throw</td> <td align=center>raise</td> </tr> </tbody></table> <p>Ketika terjadi error, baris selanjutnya tidak akan dieksekusi. Ruby akan menangkap error tersebut dengan <code>rescue</code>, dan akhirnya menjalankan instruksi <code>ensure</code>.</p> <div class=highlight><pre><span class="k">def</span> <span class="nf">foo</span>
+  <span class="n">str</span> <span class="o">=</span> <span class="s2">&quot;Hello world&quot;</span>
+  <span class="n">str</span><span class="o">.</span><span class="n">bar</span>
+  <span class="nb">puts</span> <span class="s2">&quot;This line is ignored&quot;</span>
+<span class="k">rescue</span> <span class="no">NoMethodError</span> <span class="o">=&gt;</span> <span class="n">e</span>
+  <span class="nb">print</span> <span class="s2">&quot;Catching: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="n">to_s</span>
+<span class="k">rescue</span> <span class="no">Exception</span>
+  <span class="nb">print</span> <span class="s2">&quot;Problem found!&quot;</span>
+<span class="k">ensure</span>
+  <span class="nb">puts</span> <span class="s2">&quot; -- This is it&quot;</span>
+<span class="k">end</span>
+
+<span class="n">foo</span> <span class="c1"># =&gt; Catching: undefined method `bar&#39; for &quot;Hello world&quot;:String -- This is it</span>
+</pre></div> <p>Kita bisa melemparkan exception kapan saja dengan <code>raise</code>.</p> <div class=highlight><pre><span class="k">def</span> <span class="nf">goo</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;</span> <span class="mi">0</span>
+    <span class="k">raise</span> <span class="no">StandardError</span><span class="p">,</span> <span class="s2">&quot;Negative number&quot;</span>
+  <span class="k">else</span>
+    <span class="nb">puts</span> <span class="s2">&quot;It&#39;s positive&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">def</span> <span class="nf">hoo</span>
+  <span class="n">goo</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+  <span class="nb">puts</span> <span class="s2">&quot;It is printed?&quot;</span>
+<span class="k">rescue</span> <span class="no">Exception</span> <span class="o">=&gt;</span> <span class="n">e</span>
+  <span class="nb">print</span> <span class="s2">&quot;Exception: &quot;</span> <span class="o">+</span> <span class="n">e</span><span class="o">.</span><span class="n">to_s</span>
+<span class="k">end</span>
+
+<span class="n">hoo</span> <span class="c1"># =&gt; Exception: Negative number</span>
+</pre></div> <p>Selain menggunakan keyword <code>rescue</code> dan <code>raise</code>, kita bisa juga menggunakan method <code>catch</code> dan <code>throw</code> pada Ruby. Penggunaan argumen <code>catch</code> dan <code>throw</code> pada Ruby ini berbeda dengan di Java, meskipun namanya sama. </p> <div class=highlight><pre><span class="k">def</span> <span class="nf">print_me</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+  <span class="nb">puts</span> <span class="n">n</span>
+  <span class="kp">throw</span> <span class="ss">:done</span> <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span>
+  <span class="n">print_me</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="kp">catch</span><span class="p">(</span><span class="ss">:done</span><span class="p">)</span> <span class="k">do</span>
+  <span class="n">print_me</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="k">end</span>
+</pre></div> <p>Penggunaan <code>throw</code> dan <code>catch</code> di ruby sangat jarang dilakukan dan sebaiknya dihindari</p> <h2>Advanced Blocks</h2> <h3>Implicit Block</h3> <p>Setiap method di ruby dapat menerima block sebagai argumen terakhir, sekalipun dalam definisi method tersebut tidak mencantumkan argumen block.</p> <p>Untuk mengecek apakah terdapat sebuah argumen block, panggil <code>block_given?</code> dalam sebuah method. Sedangkan untuk mengeksekusi block tersebut dapat menggunakan <code>yield</code>.</p> <div class=highlight><pre><span class="k">def</span> <span class="nf">foo</span>
+  <span class="k">if</span> <span class="nb">block_given?</span>
+    <span class="k">yield</span>
+    <span class="k">yield</span>
+  <span class="k">else</span>
+    <span class="nb">puts</span> <span class="s1">&#39;No block here&#39;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">foo</span> <span class="p">{</span> <span class="nb">print</span> <span class="s1">&#39;Hello &#39;</span> <span class="p">}</span> <span class="c1"># =&gt; Hello Hello</span>
+
+<span class="n">foo</span> <span class="c1"># =&gt; No block here</span>
+</pre></div> <p><code>yield</code> dapat menerima argumen yang akan diteruskan ke block yang dieksekusi</p> <div class=highlight><pre><span class="k">def</span> <span class="nf">foo</span>
+  <span class="k">yield</span><span class="p">(</span><span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="o">]</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">foo</span> <span class="k">do</span> <span class="o">|</span><span class="n">array</span><span class="o">|</span>
+  <span class="nb">puts</span> <span class="n">array</span>
+<span class="k">end</span>
+</pre></div> <h3>Proc</h3> <p>Ruby memungkinkan kita menyimpan <em>procedure</em> atau <code>Proc</code> sebagai objek lengkap dengan konteksnya.</p> <p>Penggunaan <em>block</em> pada Ruby itu relatif sederhana. Meskipun demikian, kita mungkin perlu punya beberapa <em>block</em> yang berbeda dan menggunakannya berkali-kali. Untuk menghindari kode yang repetitif tersebut, kita bisa menyimpannya sebagai <em>procedure</em> atau <code>Proc</code>, sebagai objek yang lengkap dengan konteksnya. Perbedaan antara <em>block</em> dan <code>Proc</code> adalah <em>block</em> merupakan suatu <code>Proc</code> yang tidak bisa disimpan dan merupakan solusi sekali pakai. </p> <div class=highlight><pre><span class="k">def</span> <span class="nf">foo</span>
+  <span class="n">label</span> <span class="o">=</span> <span class="nb">proc</span> <span class="k">do</span>
+    <span class="nb">print</span> <span class="s2">&quot;counting&quot;</span>
+  <span class="k">end</span>
+
+  <span class="n">count</span> <span class="o">=</span> <span class="no">Proc</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span>
+    <span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="o">].</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">i</span><span class="o">|</span> 
+      <span class="nb">print</span> <span class="n">i</span> 
+    <span class="k">end</span>
+    <span class="nb">puts</span>
+  <span class="k">end</span>
+
+  <span class="n">label</span><span class="o">.</span><span class="n">call</span>
+  <span class="nb">print</span> <span class="s2">&quot; - &quot;</span> 
+  <span class="n">count</span><span class="o">.</span><span class="n">call</span>
+<span class="k">end</span>
+
+<span class="n">foo</span> <span class="c1"># =&gt; counting - 12345</span>
+</pre></div> <h3>Lambda</h3> <p>Di Ruby, <em>lambda</em> merupakan suatu <em>method</em> yang menciptakan objek <em>Proc</em> yang terkait dengan konteks saat ini dan melakukan pengecekan parameter ketika dipanggil.</p> <p>Berbeda dengan Proc, lambda akan mengecek jumlah argumen yang dioper. </p> <div class=highlight><pre><span class="k">def</span> <span class="nf">foo</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+  <span class="n">one</span><span class="p">,</span> <span class="n">two</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span>
+  <span class="n">code</span><span class="o">.</span><span class="n">call</span><span class="p">(</span><span class="n">one</span><span class="p">,</span> <span class="n">two</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="n">foo</span><span class="p">(</span><span class="no">Proc</span><span class="o">.</span><span class="n">new</span> <span class="p">{</span> <span class="o">|</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">|</span> <span class="nb">puts</span> <span class="s2">&quot;a = </span><span class="si">#{</span><span class="n">a</span><span class="si">}</span><span class="s2">, b = </span><span class="si">#{</span><span class="n">b</span><span class="si">}</span><span class="s2">, c = </span><span class="si">#{</span><span class="n">c</span><span class="o">.</span><span class="n">class</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">}</span> <span class="p">)</span> <span class="c1"># =&gt; a = 1, b = 2, c = NilClass</span>
+
+<span class="n">foo</span><span class="p">(</span><span class="nb">lambda</span> <span class="p">{</span> <span class="o">|</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">|</span> <span class="nb">puts</span> <span class="s2">&quot;a = </span><span class="si">#{</span><span class="n">a</span><span class="si">}</span><span class="s2">, b = </span><span class="si">#{</span><span class="n">b</span><span class="si">}</span><span class="s2">, c = </span><span class="si">#{</span><span class="n">c</span><span class="o">.</span><span class="n">class</span><span class="si">}</span><span class="s2">&quot;</span> <span class="p">}</span> <span class="p">)</span> <span class="c1"># =&gt; ArgumentError: wrong number of arguments (2 for 3)</span>
+</pre></div> <h3>Passing Proc Around</h3> <p>Untuk mem-pass suatu proc atau lambda sebagai argumen suatu method, variabel proc/lambda tersebut diberi prefix <code>&amp;</code></p> <div class=highlight><pre><span class="n">print_item</span> <span class="o">=</span> <span class="nb">proc</span> <span class="k">do</span> <span class="o">|</span><span class="n">item</span><span class="o">|</span>
+  <span class="nb">puts</span> <span class="n">item</span>
+<span class="k">end</span>
+
+<span class="o">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="o">].</span><span class="n">each</span> <span class="o">&amp;</span><span class="n">print_item</span>
+</pre></div> <h2>Classes as Objects</h2> <p><em>Object</em> merupakan <em>root</em> dari hierarki kelas di Ruby. Semua <em>method</em> dari kelas <em>Object</em> akan tersedia di seluruh kelas kecuali di-<em>override</em> secara eksplisit. Selengkapnya ada di <a href="//www.ruby-doc.org/core/classes/Object.html">http://www.ruby-doc.org/core/classes/Object.html</a></p> <h2>Metaprogramming</h2> <p><em>Metaprogramming</em> merupakan pemrograman yang memanipulasi program lainnya atau bahkan dirinya sendiri, atau mengerjakan hal-hal yang biasanya dilakukan pada <em>compile time</em>, pada waktu <em>runtime</em>. Kemampuan suatu objek untuk memanipulasi dirinya sendiri ini sering disebut sebagai <em>reflection</em>.</p> <p>Metaprogramming di ruby memanfaatkan sifat ruby yang sangat dinamis. Beberapa teknik yang sering digunakan dalam metaprogramming di ruby antara lain:</p> <h3>Monkey Patching</h3> <p>Salah satu bentuk <em>metaprogramming</em> adalah <em>monkey patching</em>, yaitu memodifikasi <em>runtime code</em> dari suatu bahasa yang dinamis tanpa mengubah <em>source code</em> aslinya. </p> <p>Contoh yang sangat menarik dalam monkey patching di ruby adalah dengan melakukan overwrite kelas yang sudah didefinisikan sebelumnya, termasuk kelas yang built-in (bawaan) ruby seperti <code>Fixnum</code>. Kelas dalam ruby dapat dibuka dan didefinisikan ulang kapanpun kita mau. Dengan demikian kita dapat dengan mudah mengubah behaviour dari suatu object sesuai keinginan kita.</p> <p>Dibawah ini adalah contoh monkey patching yang sangat berbahaya. Di sini kita membuka kembali kelas <code>Fixnum</code> yang merupakan kelas bagi angka integer bawaan ruby. Kemudian kita mendefinisikan ulang method <code>+</code> untuk selalu me-return angka 42 kapanpun.</p> <div class=highlight><pre><span class="k">class</span> <span class="nc">Fixnum</span>
+  <span class="k">def</span> <span class="nf">+</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="mi">42</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="mi">3</span> <span class="o">+</span> <span class="mi">4</span> <span class="c1"># =&gt; 42</span>
+</pre></div> <p>Kita bahkan juga bisa meng-<em>override</em> semua objek dengan cara meng-override kelas <code>Object</code> yang merupakan hirarki kelas tertinggi, sehingga semua objek akan terpengaruh.</p> <p>Contoh berikut ini menambahkan atribut timestamp bagi semua object, sehingga setiap object akan menyimpan waktu ketika object tersebut diinisiasi.</p> <div class=highlight><pre><span class="k">class</span> <span class="nc">Object</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:timestamp</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Class</span>
+  <span class="n">alias_method</span> <span class="ss">:old_new</span><span class="p">,</span> <span class="ss">:new</span>
+  <span class="k">def</span> <span class="nf">new</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">old_new</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">result</span><span class="o">.</span><span class="n">timestamp</span> <span class="o">=</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span>
+    <span class="n">result</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Foo</span>
+<span class="k">end</span>
+
+<span class="no">Foo</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">timestamp</span>
+</pre></div> <h3>method_missing</h3> <p>Ketika kita mengirimkan pesan ke objek, objek akan mengeksekusi <em>method</em> pertama yang ditemukannya pada <em>method lookup path</em> dengan nama yang sama persis dengan pesan. Jika tidak ditemukan, ia akan melemparkan <em>exception</em> NoMethodError, kecuali kalau kita sudah menyediakan sebuah <em>method</em> bernama <code>method_missing</code>.</p> <p><code>method_nissing</code> dapat kita override sesuai dengan keinginan kita. Misalnya kita dapat meng-override <code>method_missing</code> sehingga jika kita memanggil method yang tidak tersedia, object tersebut akan memberi kita peringatan.</p> <div class=highlight><pre><span class="k">class</span> <span class="nc">Foo</span>
+  <span class="k">def</span> <span class="nf">method_missing</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>  
+    <span class="nb">puts</span> <span class="s2">&quot;method </span><span class="si">#{</span><span class="n">m</span><span class="si">}</span><span class="s2"> is not defined. Please define it first.&quot;</span>  
+  <span class="k">end</span>  
+<span class="k">end</span>
+
+<span class="no">Foo</span><span class="o">.</span><span class="n">new</span><span class="o">.</span><span class="n">bar</span> <span class="c1"># =&gt; method bar is not defined. Please define it first.</span>
+</pre></div> <h2>I/O</h2> <p>Dasar dari semua input/output di Ruby adalah kelas <code>IO</code>, di mana merepresentasikan stream input/output data dalam bentuk byte. Standard stream mencakup stdin (keyboard), stdout (display ke layar) dan stderr (error output). Parameter pertama konstruktor kelas IO adalah nomer <em>file descriptor</em>, sedangkan parameter keduanya merupakan mode I/O. Ada beberapa macam mode I/O, antara lain: r, r+, w, w+, a, a+, b</p> <table><thead> <tr> <th align=center>Stream</th> <th align=center>File Descriptor</th> </tr> </thead><tbody> <tr> <td align=center>stdin</td> <td align=center>0</td> </tr> <tr> <td align=center>stdout</td> <td align=center>1</td> </tr> <tr> <td align=center>stderr</td> <td align=center>2</td> </tr> </tbody></table> <div class=highlight><pre><span class="n">ios</span> <span class="o">=</span> <span class="no">IO</span><span class="o">.</span><span class="n">new</span><span class="p">(</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span> <span class="p">)</span>
+<span class="n">ios</span><span class="o">.</span><span class="n">puts</span> <span class="s2">&quot;Hello IO&quot;</span> <span class="c1"># =&gt; Hello IO</span>
+
+<span class="n">ios</span><span class="o">.</span><span class="n">fileno</span> <span class="c1"># =&gt; 1</span>
+<span class="n">ios</span><span class="o">.</span><span class="n">to_i</span> <span class="c1"># =&gt; 1</span>
+
+<span class="n">ios</span><span class="o">.</span><span class="n">close</span>
+</pre></div> <h2>Files</h2> <p>Di Ruby, kita bisa memanipulasi file dan folder dengan menggunakan <em>method-method</em> dari kelas Dir dan File. </p> <p>Buat dan hapus folder:</p> <div class=highlight><pre><span class="no">Dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="s2">&quot;/tmp/ruby_basic&quot;</span><span class="p">,</span><span class="mi">777</span><span class="p">)</span>
+<span class="n">dir</span> <span class="o">=</span> <span class="no">Dir</span><span class="o">.</span><span class="n">pwd</span>
+<span class="nb">puts</span> <span class="n">dir</span>
+<span class="no">Dir</span><span class="o">.</span><span class="n">rmdir</span><span class="p">(</span><span class="s2">&quot;/tmp/ruby_basic&quot;</span><span class="p">)</span>
+</pre></div> <p>Buat dan hapus file:</p> <div class=highlight><pre><span class="n">file</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">new</span><span class="p">(</span> <span class="s2">&quot;aaaa.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span> <span class="p">)</span> 
+<span class="no">File</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span> <span class="s2">&quot;aaaa.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;bbbb.txt&quot;</span> <span class="p">)</span> 
+<span class="no">File</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span> <span class="s2">&quot;bbbb.txt&quot;</span> <span class="p">)</span>
+</pre></div> <p>Pemrosesan file per baris pada Ruby:</p> <div class=highlight><pre><span class="n">file</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">open</span><span class="p">(</span> <span class="s2">&quot;Readme.md&quot;</span> <span class="p">)</span> <span class="k">if</span> <span class="ss">File</span><span class="p">:</span><span class="ss">:exists?</span><span class="p">(</span> <span class="s2">&quot;Readme.md&quot;</span> <span class="p">)</span>
+
+<span class="n">file</span><span class="o">.</span><span class="n">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">line</span><span class="o">|</span> 
+  <span class="nb">print</span> <span class="s2">&quot;</span><span class="si">#{</span><span class="n">file</span><span class="o">.</span><span class="n">lineno</span><span class="si">}</span><span class="s2">. &quot;</span><span class="p">,</span> <span class="n">line</span>
+<span class="k">end</span> <span class="k">unless</span> <span class="n">file</span><span class="o">.</span><span class="n">closed?</span>
+
+<span class="n">file</span><span class="o">.</span><span class="n">close</span>
+</pre></div> </body> </html>

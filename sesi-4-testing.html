@@ -1,0 +1,126 @@
+<!doctype html> <html> <head> <meta charset=utf-8> <meta content="IE=edge,chrome=1" http-equiv=X-UA-Compatible> <title>&lt; Pemrograman Ruby &gt; | Sesi 4: Libraries & Testing</title> <link href="/css/all.css?1363169393" media=screen rel=stylesheet /> <script src="/js/all.js?1363169392"></script> </head> <body class=sesi-4-testing> <div id=fixed-menu> <div class=content> <h1><a href=".">&lt; Pemrograman Ruby &gt;</a></h1> </div> </div> <h1>Sesi 4: Libraries & Testing</h1> <h2>Libraries</h2> <p>Salah satu keunggulan ruby adalah ruby memiliki banyak sekali library yang bisa kita pakai sesuai kebutuhan kita. Standar distribusi library di ruby adalah dengan menggunakan format yang bernama <em>gem</em>.</p> <h3>Instalasi &amp; menggunakan gems</h3> <p>Sebuah gem adalah suatu kumpulan file library beserta metadatanya yang dikompresi dengan gzip, biasanya dengan ekstensi <code>.gem</code>. Untuk menginstall suatu library menggunakan gem, kita menggunakan perintah</p> <div class=highlight><pre>  $ <span class="n">gem</span> <span class="n">install</span> <span class="o">&lt;</span><span class="n">nama</span> <span class="n">gem</span><span class="o">&gt;</span>
+</pre></div> <p>contoh, kita akan menginstall builder, library untuk membuat dokumen xml:</p> <div class=highlight><pre>  $ <span class="n">gem</span> <span class="n">install</span> <span class="n">builder</span>
+</pre></div> <p>Untuk menggunakan library, baik yang bawaan ruby maupun yang diinstall menggunakan gem, kita menggunakan method <code>require &quot;&lt;nama file&gt;&quot;</code>.</p> <div class=highlight><pre><span class="nb">require</span> <span class="s2">&quot;rubygems&quot;</span> <span class="c1"># tidak dibutuhkan untuk ruby 1.9 ke atas</span>
+<span class="nb">require</span> <span class="s2">&quot;builder&quot;</span>
+
+<span class="n">xml</span> <span class="o">=</span> <span class="ss">Builder</span><span class="p">:</span><span class="ss">:XmlMarkup</span><span class="o">.</span><span class="n">new</span>
+<span class="n">xml</span><span class="o">.</span><span class="n">person</span> <span class="k">do</span>
+  <span class="n">xml</span><span class="o">.</span><span class="n">name</span> <span class="s2">&quot;Slamet Riyadi&quot;</span>
+  <span class="n">xml</span><span class="o">.</span><span class="n">location</span> <span class="s2">&quot;Indonesia&quot;</span>
+<span class="k">end</span>
+</pre></div> <h3>Bundler</h3> <p>Untuk memanage library-library yang digunakan pada suatu project, kita dapat menggunakan bundler.</p> <p>Pada root directory suatu project, kita mencatat semua library yang kita gunakan beserta versi masing-masing pada file dengan nama <em>Gemfile</em>.</p> <div class=highlight><pre><span class="n">mkdir</span> <span class="n">my_project</span>
+<span class="n">cd</span> <span class="n">my_project</span>
+<span class="n">touch</span> <span class="n">Gemfile</span>
+</pre></div><div class=highlight><pre><span class="c1"># Gemfile</span>
+<span class="n">source</span> <span class="s1">&#39;http://rubygems.org&#39;</span>
+
+<span class="n">gem</span> <span class="s1">&#39;rails&#39;</span><span class="p">,</span> <span class="s1">&#39;3.2.3&#39;</span>
+<span class="n">gem</span> <span class="s2">&quot;authlogic&quot;</span>
+<span class="n">gem</span> <span class="s1">&#39;will_paginate&#39;</span><span class="p">,</span> <span class="ss">:git</span> <span class="o">=&gt;</span> <span class="s2">&quot;git://github.com/bukalapak/will_paginate.git&quot;</span>
+<span class="n">gem</span> <span class="s2">&quot;simple_form&quot;</span><span class="p">,</span> <span class="s2">&quot;~&gt; 2.0&quot;</span>
+<span class="n">gem</span> <span class="s2">&quot;whenever&quot;</span><span class="p">,</span> <span class="ss">:require</span> <span class="o">=&gt;</span> <span class="kp">false</span>
+</pre></div> <p>Untuk menginstall library yang dibutuhkan, kita menggunakan perintah <code>bundle install</code>. Bundler kemudian akan membuat file dengan nama <em>Gemfile.lock</em> yang mencatat versi library yang digunakan saat ini, sehingga ketika kita menjalankan <code>bundle install</code> pada lain waktu, kita akan mendapatkan library dengan versi yang sama.</p> <p>Kemudian pada project kita, kita me-load library menggunakan bundler sebagai berikut:</p> <div class=highlight><pre><span class="nb">require</span> <span class="s2">&quot;rubygems&quot;</span>
+<span class="nb">require</span> <span class="s2">&quot;bundler/setup&quot;</span>
+
+<span class="nb">require</span> <span class="s2">&quot;authlogic&quot;</span>
+</pre></div> <h3>Packaging Programs and Libraries for Distribution</h3> <p>Untuk membuat kode kita menjadi gem, kita akan menggunakan bundler untuk menyiapkan package dan strukturnya, sebagai berikut:</p> <div class=highlight><pre><span class="n">bundle</span> <span class="n">gem</span> <span class="n">namagem</span>
+</pre></div> <p>yang akan menghasilkan struktur direktori di mana kita bisa meletakkan file-file library kita. Kemudian kita edit file namagem.gemspec dengan data yang sesuai:</p> <div class=highlight><pre><span class="c1"># -*- encoding: utf-8 -*-</span>
+<span class="vg">$:</span><span class="o">.</span><span class="n">push</span> <span class="no">File</span><span class="o">.</span><span class="n">expand_path</span><span class="p">(</span><span class="s2">&quot;../lib&quot;</span><span class="p">,</span> <span class="bp">__FILE__</span><span class="p">)</span>
+<span class="nb">require</span> <span class="s2">&quot;namagem/version&quot;</span>
+
+<span class="ss">Gem</span><span class="p">:</span><span class="ss">:Specification</span><span class="o">.</span><span class="n">new</span> <span class="k">do</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
+  <span class="n">s</span><span class="o">.</span><span class="n">name</span>        <span class="o">=</span> <span class="s2">&quot;namagem&quot;</span>
+  <span class="n">s</span><span class="o">.</span><span class="n">version</span>     <span class="o">=</span> <span class="ss">Namagem</span><span class="p">:</span><span class="ss">:VERSION</span>
+  <span class="n">s</span><span class="o">.</span><span class="n">platform</span>    <span class="o">=</span> <span class="ss">Gem</span><span class="p">:</span><span class="ss">:Platform</span><span class="o">::</span><span class="no">RUBY</span>
+  <span class="n">s</span><span class="o">.</span><span class="n">authors</span>     <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;Nugroho Herucahyono&quot;</span><span class="o">]</span>
+  <span class="n">s</span><span class="o">.</span><span class="n">email</span>       <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;xinuc@xinuc.org&quot;</span><span class="o">]</span>
+  <span class="n">s</span><span class="o">.</span><span class="n">homepage</span>    <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+  <span class="n">s</span><span class="o">.</span><span class="n">summary</span>     <span class="o">=</span> <span class="sx">%q{Gem tanpa fitur}</span>
+  <span class="n">s</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="sx">%q{Gem tanpa fitur.}</span>
+
+  <span class="n">s</span><span class="o">.</span><span class="n">add_development_dependency</span> <span class="s2">&quot;rspec&quot;</span>
+
+  <span class="n">s</span><span class="o">.</span><span class="n">rubyforge_project</span> <span class="o">=</span> <span class="s2">&quot;namagem&quot;</span>
+
+  <span class="n">s</span><span class="o">.</span><span class="n">files</span>         <span class="o">=</span> <span class="sb">`git ls-files`</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+  <span class="n">s</span><span class="o">.</span><span class="n">test_files</span>    <span class="o">=</span> <span class="sb">`git ls-files -- {test,spec,features}/*`</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+  <span class="n">s</span><span class="o">.</span><span class="n">executables</span>   <span class="o">=</span> <span class="sb">`git ls-files -- bin/*`</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">{</span> <span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="no">File</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="p">}</span>
+  <span class="n">s</span><span class="o">.</span><span class="n">require_paths</span> <span class="o">=</span> <span class="o">[</span><span class="s2">&quot;lib&quot;</span><span class="o">]</span>
+<span class="k">end</span>
+</pre></div> <p>Selanjutnya kita dapat melakukan build gem tersebut.</p> <div class=highlight><pre><span class="n">gem</span> <span class="n">build</span> <span class="n">namagem</span><span class="p">.</span><span class="n">gemspec</span>
+</pre></div> <p>Pada umumnya, library ruby opensource dipublish oleh penulisnya ke rubygems.org, sehingga siapapun dapat menginstall dan menggunakannya dengan mudah. Kita dapat mempublish gem kita dengan perintah sebagai berikut:</p> <div class=highlight><pre><span class="n">gem</span> <span class="n">push</span> <span class="n">namagem</span><span class="o">-</span><span class="mf">0.0</span><span class="p">.</span><span class="mf">1.</span><span class="n">gem</span>
+</pre></div> <h2>Testing</h2> <p>Testing merupakan aspek yang sangat penting dalam programming. Testing dapat digunakan untuk memastikan apakah kode yang kita tulis bekerja sesuai dengan yang kita harapkan.</p> <p>Di ruby, ada banyak sekali testing framework yang tersedia. Diantaranya: test-unit, minitest, rspec, shoulda dan lain-lain. Pada sesi ini, kita akan membahas unit testing dengan menggunakan minitest, yang merupakan test framework bawaan ruby (&gt;= 1.9).</p> <h3>Unit Testing with Minitest</h3> <p>Untuk menggunakan minitest, kita cukup me-require library tersebut dengan <code>require &#39;minitest/autorun&#39;</code> dan membuat testcase untuk mengetes kode yang kita buat dengan assertion.</p> <div class=highlight><pre>  <span class="c1"># person.rb</span>
+  <span class="k">class</span> <span class="nc">Person</span>
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">first_name</span><span class="p">,</span> <span class="n">last_name</span><span class="p">)</span>
+      <span class="vi">@first_name</span> <span class="o">=</span> <span class="n">first_name</span>
+      <span class="vi">@last_name</span> <span class="o">=</span> <span class="n">last_name</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">fullname</span>
+      <span class="vi">@first_name</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="vi">@last_name</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+</pre></div><div class=highlight><pre>  <span class="c1"># person_test.rb</span>
+  <span class="nb">require</span> <span class="s1">&#39;./person&#39;</span>
+  <span class="nb">require</span> <span class="s1">&#39;minitest/autorun&#39;</span>
+
+  <span class="k">class</span> <span class="nc">PersonTest</span> <span class="o">&lt;</span> <span class="ss">MiniTest</span><span class="p">:</span><span class="ss">:Unit</span><span class="o">::</span><span class="no">TestCase</span>
+    <span class="k">def</span> <span class="nf">setup</span>
+      <span class="vi">@person</span> <span class="o">=</span> <span class="no">Person</span><span class="o">.</span><span class="n">new</span> <span class="s2">&quot;John&quot;</span><span class="p">,</span> <span class="s2">&quot;Smith&quot;</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">test_create_a_correct_fullname</span>
+      <span class="n">assert_equal</span> <span class="s2">&quot;John Smith&quot;</span><span class="p">,</span> <span class="vi">@person</span><span class="o">.</span><span class="n">fullname</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+</pre></div> <p>atau kita dapat menuliskan test dengan gaya rspec:</p> <div class=highlight><pre>  <span class="c1"># person_test.rb</span>
+  <span class="nb">require</span> <span class="s1">&#39;./person&#39;</span>
+  <span class="nb">require</span> <span class="s1">&#39;minitest/autorun&#39;</span>
+
+  <span class="n">describe</span> <span class="no">Person</span> <span class="k">do</span>
+    <span class="n">before</span> <span class="k">do</span>
+      <span class="vi">@person</span> <span class="o">=</span> <span class="no">Person</span><span class="o">.</span><span class="n">new</span> <span class="s2">&quot;John&quot;</span><span class="p">,</span> <span class="s2">&quot;Smith&quot;</span>
+    <span class="k">end</span>
+
+    <span class="n">it</span> <span class="s2">&quot;should create a correct fullname&quot;</span> <span class="k">do</span>
+      <span class="vi">@person</span><span class="o">.</span><span class="n">fullname</span><span class="o">.</span><span class="n">must_equal</span> <span class="s2">&quot;John Smith&quot;</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+</pre></div> <p>kemudian kita jalankan dengan <code>ruby person_test.rb</code>, yang akan menghasilkan</p> <div class=highlight><pre><span class="n">Run</span> <span class="n">options</span><span class="p">:</span> <span class="o">--</span><span class="n">seed</span> <span class="mi">6446</span>
+
+# <span class="n">Running</span> <span class="n">tests</span><span class="p">:</span>
+
+<span class="p">.</span>
+
+<span class="n">Finished</span> <span class="n">tests</span> <span class="n">in</span> <span class="mf">0.000741</span><span class="n">s</span><span class="p">,</span> <span class="mf">1349.7900</span> <span class="n">tests</span><span class="o">/</span><span class="n">s</span><span class="p">,</span> <span class="mf">1349.7900</span> <span class="n">assertions</span><span class="o">/</span><span class="n">s</span><span class="p">.</span>
+
+<span class="mi">1</span> <span class="n">tests</span><span class="p">,</span> <span class="mi">1</span> <span class="n">assertions</span><span class="p">,</span> <span class="mi">0</span> <span class="n">failures</span><span class="p">,</span> <span class="mi">0</span> <span class="n">errors</span><span class="p">,</span> <span class="mi">0</span> <span class="n">skips</span>
+</pre></div> <p>yang berarti bahwa ada 1 test yang dijalankan tanpa failure.</p> <h3>Introduction to TDD</h3> <p>TDD (test driven development) adalah metode pembuatan software dengan menuliskan test terlebih dahulu, baru kemudian menulis kode implementasinya. Setelah kode implementasi memenuhi testnya, kode kemudian di refactor ke dalam bentuk yang lebih modular.</p> <p>Misalnya kita akan menulis kode untuk mengubah besaran temperatur dari celsius ke fahrenheit dan sebaliknya. Pertama, kita akan membuat list fitur dari kode tersebut, yaitu:</p> <ul> <li>dapat mengubah temperatur dari celsius ke fahrenheit</li> <li>dapat mengubah temperatur dari fahrenheit ke celsius</li> </ul> <p>kemudian, kita buat test case nya terlebih dahulu, sebagai berikut:</p> <div class=highlight><pre>  <span class="c1"># temperature_converter_test.rb</span>
+
+  <span class="nb">require</span> <span class="s1">&#39;minitest/autorun&#39;</span>
+
+  <span class="n">describe</span> <span class="no">TemperatureConverter</span> <span class="k">do</span>
+    <span class="n">it</span> <span class="s2">&quot;can convert temperature from celsius to fahrenheit&quot;</span> <span class="k">do</span>
+      <span class="no">TemperatureConverter</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">celsius_to_fahrenheit</span><span class="o">.</span><span class="n">must_equal</span> <span class="mi">50</span>
+    <span class="k">end</span>
+
+    <span class="n">it</span> <span class="s2">&quot;can convert temperature from fahrenheit to celsius&quot;</span> <span class="k">do</span>
+      <span class="no">TemperatureConverter</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="o">.</span><span class="n">fahrenheit_to_celsius</span><span class="o">.</span><span class="n">must_equal</span> <span class="mi">10</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+</pre></div> <p>Jika kita jalankan test ini, maka tentu akan gagal. Baru kemudian kita buat implementasinya sampai testnya berhasil.</p> <div class=highlight><pre>  <span class="c1"># temperature_converter.rb</span>
+
+  <span class="k">class</span> <span class="nc">TemperatureConverter</span>
+    <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+      <span class="vi">@temp</span> <span class="o">=</span> <span class="n">temp</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">celsius_to_fahrenheit</span>
+      <span class="vi">@temp</span> <span class="o">*</span> <span class="mi">9</span> <span class="o">/</span> <span class="mi">5</span> <span class="o">+</span> <span class="mi">32</span>
+    <span class="k">end</span>
+
+    <span class="k">def</span> <span class="nf">fahrenheit_to_celsius</span>
+      <span class="p">(</span><span class="vi">@temp</span> <span class="o">-</span> <span class="mi">32</span><span class="p">)</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">/</span> <span class="mi">9</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+</pre></div> </body> </html>

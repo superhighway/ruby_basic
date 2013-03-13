@@ -1,0 +1,156 @@
+<!doctype html> <html> <head> <meta charset=utf-8> <meta content="IE=edge,chrome=1" http-equiv=X-UA-Compatible> <title>&lt; Pemrograman Ruby &gt; | Sesi 2: OOP with Ruby</title> <link href="/css/all.css?1363169393" media=screen rel=stylesheet /> <script src="/js/all.js?1363169392"></script> </head> <body class=sesi-2-oop> <div id=fixed-menu> <div class=content> <h1><a href=".">&lt; Pemrograman Ruby &gt;</a></h1> </div> </div> <h1>Sesi 2: OOP with Ruby</h1> <h2>Overview</h2> <p>Seperti yang telah disebutkan sebelumnya, Ruby merupakan bahasa pemrograman yang berorientasi objek. Semua yang bisa kita manipulasi di Ruby adalah sebuah objek. </p> <p>Di dalam pemrograman berorientasi objek, sebuah kelas memuat berbagai properti, seperti method dan variabel. Kelas bisa mewarisi properti dari kelas pendahulu (parent class) atau superclass nya, sehingga membentuk hierarki kelas dengan base class di tempat paling atas. Kelas paling atas (base class) di Ruby adalah <code>Object</code>. </p> <p>Sebuah kelas didefinisikan dengan keyword <code>class</code>, dan diakhiri dengan sebuah <code>end</code>.</p> <div class=highlight><pre><span class="k">class</span> <span class="nc">Hello</span>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span> <span class="nb">name</span> <span class="p">)</span> 
+    <span class="vi">@name</span> <span class="o">=</span> <span class="nb">name</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">hello_txt</span>
+    <span class="nb">puts</span> <span class="s2">&quot;Hello, &quot;</span> <span class="o">+</span> <span class="vi">@name</span> <span class="o">+</span> <span class="s2">&quot;!&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">hi</span> <span class="o">=</span> <span class="no">Hello</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;World&quot;</span><span class="p">)</span>
+<span class="n">hi</span><span class="o">.</span><span class="n">hello_txt</span> <span class="c1"># =&gt; Hello, World!</span>
+</pre></div> <p>Method <code>initialize</code> pada Ruby merupakan constructor, yang otomatis akan dieksekusi pertama kali setelah objek kelas tersebut diciptakan. Pada contoh di atas, method <code>initialize</code> akan mendefinisikan sebuah instance variable <code>@name</code> dan meng-assign-nya dengan argumen yang dimasukkan.</p> <h2>Instance Variables</h2> <p>Instance variabel adalah variabel yang ada di dalam instance sebuah kelas, dan cakupannya terbatas. Sebuah instance variable diawali dengan tanda <code>@</code>, seperti instance variable pada contoh sebelumnya <code>@name</code>. Kita bisa mendefinisikan sebuah instance variable di dalam atau di luar sebuah method. Namun, kita hanya bisa mengaksesnya dari luar objek dengan menggunakan method accessor: getter dan setter.</p> <div class=highlight><pre><span class="k">class</span> <span class="nc">Hello</span>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span> <span class="nb">name</span> <span class="p">)</span> 
+    <span class="vi">@name</span> <span class="o">=</span> <span class="nb">name</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">hello_txt</span>
+    <span class="nb">puts</span> <span class="s2">&quot;Hello, &quot;</span> <span class="o">+</span> <span class="vi">@name</span> <span class="o">+</span> <span class="s2">&quot;!&quot;</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">name</span>
+    <span class="vi">@name</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">name</span><span class="o">=</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="vi">@name</span> <span class="o">=</span> <span class="n">value</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">hi</span> <span class="o">=</span> <span class="no">Hello</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;World&quot;</span><span class="p">)</span>
+<span class="n">hi</span><span class="o">.</span><span class="n">name</span> <span class="c1"># =&gt; World</span>
+<span class="n">hi</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;CCBI&quot;</span>
+<span class="n">hi</span><span class="o">.</span><span class="n">name</span> <span class="c1"># =&gt; CCBI</span>
+</pre></div> <h2>Accessors</h2> <p>Ruby menyederhanakan pembuatan getter dan setter secara meta-programming dari kelas <code>Module</code>, yakni menggunakan method <code>attr</code>, <code>attr_reader</code>, <code>attr_writer</code> dan <code>attr_accessor</code>.</p> <p>Method <code>attr</code> akan membuat sebuah getter. Jika argumen keduanya <code>true</code>, ia juga akan membuat sebuah setter.</p> <div class=highlight><pre><span class="k">class</span> <span class="nc">Bird</span>
+  <span class="kp">attr</span> <span class="ss">:chirp</span><span class="p">,</span> <span class="kp">true</span>
+<span class="k">end</span>
+
+<span class="no">Bird</span><span class="o">.</span><span class="n">instance_methods</span> <span class="o">-</span> <span class="no">Object</span><span class="o">.</span><span class="n">instance_methods</span> <span class="c1"># =&gt; [&quot;chirp&quot;,&quot;chirp=&quot;]</span>
+
+<span class="n">bird</span> <span class="o">=</span> <span class="no">Bird</span><span class="o">.</span><span class="n">new</span>
+<span class="n">bird</span><span class="o">.</span><span class="n">chirp</span> <span class="o">=</span> <span class="s2">&quot;Tweet!&quot;</span>
+<span class="n">bird</span><span class="o">.</span><span class="n">chirp</span> <span class="c1"># =&gt;  Tweet!</span>
+</pre></div> <p>Method <code>attr_reader</code> akan menciptakan getter, sedangkan method <code>attr_writer</code> akan menciptakan setter.</p> <div class=highlight><pre><span class="k">class</span> <span class="nc">Bird</span>
+  <span class="kp">attr_reader</span> <span class="ss">:chirp</span> <span class="c1"># getter</span>
+  <span class="kp">attr_writer</span> <span class="ss">:chirp</span> <span class="c1"># setter</span>
+<span class="k">end</span>
+
+<span class="no">Bird</span><span class="o">.</span><span class="n">instance_methods</span> <span class="o">-</span> <span class="no">Object</span><span class="o">.</span><span class="n">instance_methods</span> <span class="c1"># =&gt; [&quot;chirp&quot;,&quot;chirp=&quot;]</span>
+</pre></div> <p>Method <code>attr_accessor</code> akan memberikan efek yang sama seperti jika memanggil <code>attr_reader</code> dan <code>attr_writer</code>.</p> <div class=highlight><pre><span class="k">class</span> <span class="nc">Bird</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:chirp</span><span class="p">,</span> <span class="ss">:fly</span><span class="p">,</span> <span class="ss">:spawn</span>
+<span class="k">end</span>
+
+<span class="no">Bird</span><span class="o">.</span><span class="n">instance_methods</span> <span class="o">-</span> <span class="no">Object</span><span class="o">.</span><span class="n">instance_methods</span> <span class="c1"># =&gt; [:chirp, :chirp=, :fly, :fly=, :spawn, :spawn=]</span>
+</pre></div> <h2>Class Variables</h2> <p>Class variable merupakan variabel yang digunakan bersama oleh semua instance suatu kelas, mirip seperti konsep static variable di Java atau C++. Class variable di Ruby harus diawali dengan <code>@@</code>.</p> <div class=highlight><pre><span class="k">class</span> <span class="nc">Bird</span>
+  <span class="vc">@@count</span> <span class="o">=</span> <span class="mi">0</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span>
+    <span class="vc">@@count</span> <span class="o">+=</span> <span class="mi">1</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">count</span>
+    <span class="vc">@@count</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">b1</span> <span class="o">=</span> <span class="no">Bird</span><span class="o">.</span><span class="n">new</span>
+<span class="n">b2</span> <span class="o">=</span> <span class="no">Bird</span><span class="o">.</span><span class="n">new</span>
+<span class="n">b3</span> <span class="o">=</span> <span class="no">Bird</span><span class="o">.</span><span class="n">new</span>
+<span class="n">b1</span><span class="o">.</span><span class="n">count</span> <span class="c1"># =&gt; 3</span>
+</pre></div> <h2>Class Methods</h2> <p>Class method (static method) merupakan method yang berasosiasi dengan kelas atau module di Ruby, bukan instance dari suatu kelas. Kita bisa mengeksekusi sebuah class method tanpa sebuah instance objek. Class method di Ruby selalu diawali dengan <code>self.</code></p> <div class=highlight><pre><span class="k">class</span> <span class="nc">Bird</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">tweet</span>
+    <span class="nb">puts</span> <span class="s2">&quot;Tweeeeet!!&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="no">Bird</span><span class="o">.</span><span class="n">tweet</span> <span class="c1"># =&gt; Tweeeeet!!</span>
+</pre></div> <h2>Inheritance</h2> <p>Pewarisan (inheritance) pada Ruby dilakukan dengan menggunakan operator <code>&lt;</code>. Tidak seperti C++ yang mendukung multiple inheritance, Ruby menggunakan single inheritance, yaitu sebuah kelas hanya bisa mewarisi properti dari 1 parent class. </p> <div class=highlight><pre><span class="k">class</span> <span class="nc">Bird</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:chirp</span><span class="p">,</span> <span class="ss">:egg</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Duck</span> <span class="o">&lt;</span> <span class="no">Bird</span>
+  <span class="kp">attr_accessor</span> <span class="ss">:quack</span>
+<span class="k">end</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="no">Duck</span><span class="o">.</span><span class="n">new</span>
+<span class="n">put</span> <span class="n">d</span><span class="o">.</span><span class="n">respond_to?</span><span class="p">(</span><span class="ss">:egg</span><span class="p">)</span> <span class="c1"># =&gt; true</span>
+</pre></div> <p>Jika kelas <code>Bird</code> di atas berada di file yang berbeda dengan kelas <code>Duck</code>, maka terlebih dulu kita perlu <code>require</code> file tersebut. Ruby akan mencari file tersebut berdasarkan <code>$LOAD_PATH</code> yang telah didefinisikan. </p> <h2>Access Control</h2> <p>Akses ke metode dan konstan pada suatu kelas di Ruby, bisa diatur dengan kata kunci berikut ini:</p> <ul> <li><p><code>public</code> Default, bisa diakses oleh siapa saja dari mana saja.</p></li> <li><p><code>private</code> Membatasi cakupan suatu metode hanya bisa diakses oleh objek tersebut.</p></li> <li><p><code>protected</code> Bisa diakses oleh objek dari kelas tersebut dan dari kelas-kelas turunannya.</p></li> </ul> <div class=highlight><pre><span class="k">class</span> <span class="nc">Dog</span>
+  <span class="k">def</span> <span class="nf">bark</span>
+    <span class="nb">puts</span> <span class="s2">&quot;Woof!&quot;</span>
+  <span class="k">end</span>
+
+  <span class="kp">private</span>
+
+  <span class="k">def</span> <span class="nf">walk</span>
+    <span class="nb">puts</span> <span class="s2">&quot;Walk!&quot;</span>
+  <span class="k">end</span>
+
+  <span class="kp">protected</span>
+
+  <span class="k">def</span> <span class="nf">sit</span>
+    <span class="nb">puts</span> <span class="s2">&quot;Sit!&quot;</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">eat</span>
+    <span class="nb">puts</span> <span class="s2">&quot;Eat!&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Chihuahua</span> <span class="o">&lt;</span> <span class="no">Dog</span>
+  <span class="k">def</span> <span class="nf">sitdown</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">sit</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">run</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">walk</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="n">d</span> <span class="o">=</span> <span class="no">Dog</span><span class="o">.</span><span class="n">new</span>
+<span class="n">d</span><span class="o">.</span><span class="n">bark</span> <span class="c1"># =&gt; &#39;Woof!&#39;</span>
+<span class="n">d</span><span class="o">.</span><span class="n">walk</span> <span class="c1"># =&gt; error</span>
+<span class="n">d</span><span class="o">.</span><span class="n">sit</span>  <span class="c1"># =&gt; error</span>
+<span class="n">d</span><span class="o">.</span><span class="n">eat</span>  <span class="c1"># =&gt; error</span>
+
+<span class="n">c</span> <span class="o">=</span> <span class="no">Chihuahua</span><span class="o">.</span><span class="n">new</span>
+<span class="n">c</span><span class="o">.</span><span class="n">bark</span>    <span class="c1"># =&gt; &#39;Woof!&#39;</span>
+<span class="n">c</span><span class="o">.</span><span class="n">sitdown</span> <span class="c1"># =&gt; &#39;Sit!&#39;</span>
+<span class="n">c</span><span class="o">.</span><span class="n">run</span>     <span class="c1"># =&gt; error</span>
+</pre></div> <h2>Modules</h2> <p>Pada Ruby, modul itu mirip seperti kelas, tetapi tidak bisa di-instantiate. Sebuah kelas dapat mengandung &gt; 1 modul. sehingga ketika kelas tersebut di-instantiate, maka semua properti dari modul-modul tersebut akan tercakup pada objek si kelas. Hal ini memungkinkan konsep yang mirip dengan multiple inheritance. Identifier pada tiap-tiap modul akan di-override oleh definisi yang terakhir. Dengan demikian, penamaan yang bertabrakan bisa dihindari. </p> <p>Pada Ruby, modul juga merupakan sebuah namespace. Sebuah namespace adalah sekumpulan nama (seperti nama-nama method), yang memiliki cakupan/konteks. Sebuah kelas Ruby juga bisa dianggap sebagai namespace. </p> <p>Penamaan modul harus diawali dengan huruf besar. Sebuah modul bisa mengandung metode, konstan, modul lain dan bahkan kelas. Sebuah modul bisa diwarisi oleh modul lain, tetapi tidak bisa diwarisi oleh sebuah kelas.</p> <div class=highlight><pre><span class="k">module</span> <span class="nn">FlyingAnimal</span>
+  <span class="k">def</span> <span class="nf">fly</span>
+    <span class="nb">puts</span> <span class="s2">&quot;Flying high..&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">module</span> <span class="nn">LayingAnimal</span>
+  <span class="k">def</span> <span class="nf">egg</span>
+    <span class="nb">puts</span> <span class="s2">&quot;Spawning..&quot;</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="nc">Bird</span>
+  <span class="kp">include</span> <span class="no">FlyingAnimal</span><span class="p">,</span> <span class="no">LayingAnimal</span>
+<span class="k">end</span>
+
+<span class="n">b</span> <span class="o">=</span> <span class="no">Bird</span><span class="o">.</span><span class="n">new</span>
+<span class="n">b</span><span class="o">.</span><span class="n">fly</span> <span class="c1"># =&gt; Flying high..</span>
+<span class="n">b</span><span class="o">.</span><span class="n">egg</span> <span class="c1"># =&gt; Spawning..</span>
+</pre></div> <h2>Variable</h2> <p>Di Ruby, variabel tidak perlu dideklarasikan. Ruby menggunakan &quot;duck typing&quot;, semacam dynamic typing. Jika sebuah nilai bertingkah laku seperti tipe tertentu, misalnya integer, maka Ruby akan memberinya suatu konteks dan memberlakukannya pada kontes tersebut. If it walks like a duck, quacks like a duck, flies like a duck, and swims like a duck (or integer or float, etc.), then it is probably a duck.</p> <p>Sekilas ulasan kembali beberapa jenis variable di Ruby.</p> <h3>Local Variable</h3> <p>Variabel lokal memiliki cakupan yang lokal juga sesuai konteksnya, misalnya di dalam suatu metode atau perulangan. Variabel lokal pada Ruby hanya boleh diawali dengan huruf kecil atau underscore (_).</p> <div class=highlight><pre><span class="k">class</span> <span class="nc">Foo</span>
+  <span class="k">def</span> <span class="nc">self</span><span class="o">.</span><span class="nf">bar</span>
+    <span class="no">Foobar</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># error</span>
+    <span class="n">_foobar</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="nb">puts</span> <span class="n">_foobar</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre></div> <h3>Instance Variable</h3> <p>Instance variable hanya bisa diakses dari luar suatu objek melalui accessor method. Instance variable selalu diawali dengan tanda <code>@</code>.</p> <h3>Class Variable</h3> <p>Class variable merupakan variabel yang digunakan bersama oleh semua instance suatu kelas, mirip seperti konsep static variable di Java atau C++. Class variable di Ruby selalu diawali dengan <code>@@</code>.</p> <h3>Global Variables</h3> <p>Global variable bisa diakses dari mana saja. Di Ruby, global variable harus diawali dengan tanda <code>$</code>.</p> <h3>Constants</h3> <p>Variabel konstan di Ruby harus diawali dengan huruf besar, dan biasanya (secara konvensi) nama sebuah konstan ditulis dengan huruf besar semua.</p> </body> </html>
