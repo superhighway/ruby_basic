@@ -89,5 +89,6 @@ activate :minify_html
 
 set :markdown, :tables => true, :autolink => true, :gh_blockcode => true, :fenced_code_blocks => true
 set :markdown_engine, :redcarpet
+set :relative_links, true
 
 page "/sitemap.xml", :layout => false
