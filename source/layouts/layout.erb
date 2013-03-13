@@ -9,8 +9,8 @@
     <!-- Use title if it's in the page YAML frontmatter -->
     <title>&lt; Pemrograman Ruby &gt; | <%= data.page.title %></title>
     
-    <%= stylesheet_link_tag "all" %>
-    <%= javascript_include_tag  "all" %>
+    <link href="css/all.css?<%= Time.now.to_i %>" media="screen" rel="stylesheet">
+    <script src="js/all.js?<%= Time.now.to_i %>"></script>
   </head>
   
   <body class="<%= page_classes %>">
