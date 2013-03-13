@@ -10,7 +10,7 @@
     <title>&lt; Pemrograman Ruby &gt; | <%= data.page.title %></title>
     
     <link href="css/all.css?<%= Time.now.to_i %>" media="screen" rel="stylesheet">
-    <script src="js/all.js?<%= Time.now.to_i %>"></script>
+    <meta name="google-site-verification" content="JaCx1AeGRSl4Z4vWLuNuwbA-2m0l4v0S_vjfY88gDh4" />
   </head>
   
   <body class="<%= page_classes %>">
@@ -21,5 +21,18 @@
     </div>
     <h1><%= data.page.title %></h1>
     <%= yield %>
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-38935144-1']);
+      _gaq.push(['_trackPageview']);
+      _gaq.push(['_trackPageLoadTime']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
   </body>
 </html>
