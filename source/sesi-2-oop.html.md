@@ -1,4 +1,6 @@
-# Session 2: OOP with Ruby
+---
+title: "Sesi 2: OOP with Ruby"
+---
 
 ## Overview
 

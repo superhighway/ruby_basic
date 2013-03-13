@@ -1,4 +1,6 @@
-# Quiz
+---
+title: Quiz
+---
 
 ## Tuliskan output dari kode berikut:
   1. ```ruby

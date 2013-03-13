@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<% pages = ['', 'sesi-1-dasar-dasar.html', 'sesi-2-oop.html', 'sesi-3-advanced.html', 'sesi-4-testing.html', 'pertanyaan-singkat.html', 'quiz.html'] %>
+<% pages.each do |p| %>
+  <url>
+    <loc>http://nyan.catcyb.org/ruby_basic/<%= p %></loc>
+    <priority>0.7</priority>
+    <lastmod><%= Date.today.to_time.iso8601 %></lastmod>
+    <changefreq>weekly</changefreq>
+  </url>
+<% end %>
+</urlset>

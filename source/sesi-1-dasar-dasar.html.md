@@ -1,4 +1,6 @@
-# Session 1: Dasar Ruby
+---
+title: "Sesi 1: Dasar-Dasar Ruby"
+---
 
 ## Ruby Overview
 

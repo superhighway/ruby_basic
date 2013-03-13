@@ -1,3 +1,6 @@
+---
+title: Pertanyaan Singkat
+---
 
 1. Ruby itu bahasa pemrograman yang seperti apa?
    A. Strongly typed/Statically typed

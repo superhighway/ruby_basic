@@ -1,0 +1,43 @@
+@import "compass/css3/images";
+@import "compass/css3/box-shadow";
+@import "compass/css3/text-shadow";
+@import "compass/css3/border-radius";
+@import "compass/css3/transition";
+@import "normalize";
+@import "github";
+@import "solarized";
+
+#fixed-menu {
+  margin: 0; padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: #dd4411;
+  border-bottom: 1px dashed #fff;
+  z-index: 100;
+  @media screen and (min-width: 914px) {
+    .content {
+      width: 854px;
+      margin: 0 auto;
+    }
+  }
+  @media screen and (max-width: 853px) {
+    .content {
+      margin: 5px 20px;
+    }
+  }
+  .content {
+    padding: 0;
+  }
+  h1 {
+    padding: 0; margin: 5px 0;
+    a {
+      background-color: transparent;
+      color: #efef77;
+      @include text-shadow(0 -1px 0 #774411);
+      font-size: 20px;
+      margin: 0; padding: 0;
+    }
+  }
+}
